@@ -1,0 +1,20 @@
+#extension GL_OES_EGL_image_external : require
+precision highp float;
+
+varying vec2 textureCoordinate;
+uniform samplerExternalOES inputImageTexture;
+uniform float correctionRadius;
+uniform float zoom;
+uniform float osdx;
+uniform float osdy;
+ void main() {
+     vec2 newCoor = textureCoordinate-vec2(0.5,0.5);
+     float dis = length(newCoor);
+     float r = dis / correctionRadius;
+     float theta = zoom*1.0;
+     if(r > 0.0) {
+         theta = zoom*atan(r) / r;
+     }
+     vec2 newTextureCoor = vec2(0.5*osdx,0.5*osdy)+newCoor*theta;
+     gl_FragColor = texture2D(inputImageTexture, newTextureCoor);
+ }
